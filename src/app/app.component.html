@@ -19,10 +19,11 @@
 <button mat-raised-button (click)="setError()" color="primary">Error</button>
 <button mat-raised-button (click)="setValid()" color="primary">Valid</button>
 <button mat-raised-button (click)="touch()" color="primary">Touch</button>
+<button mat-raised-button (click)="unTouch()" color="primary">UnTouch</button>
 
-<pre>State: {{state$ | async | json}}</pre>
+<pre>State: {{store.getState() | json}}</pre>
 <pre>Form value: {{form.value | json}}</pre>
-<pre>name.value: {{name.value | json}}</pre>
+<!--<pre>name.value: {{name.value | json}}</pre>-->
 <pre>name: {{name | json}}</pre>
 <pre>abstract name: {{abstractName | json}}</pre>
 

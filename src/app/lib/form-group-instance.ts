@@ -1,21 +1,21 @@
 import { AbstractControlInstance } from './abstract-control-instance';
-import { FormControl } from './form-control';
 import { IFormControlState } from './form-control-state.interface';
+import { FormGroup } from './form-group';
 
-export function formControlInstance<T>(
+export function formGroupInstance<T extends object>(
     dispatch: any,
-    scheme: FormControl<T>,
+    scheme: FormGroup<T>,
     state: IFormControlState<T>,
-    cache?: FormControlInstance<T>,
-): FormControlInstance<T> {
+    cache?: FormGroupInstance<T>,
+): FormGroupInstance<T> {
     if (state === state && cache)
         return cache;
-    return new FormControlInstance<T>(dispatch, scheme, state);
+    return new FormGroupInstance<T>(dispatch, scheme, state);
 }
 
-export class FormControlInstance<T> extends AbstractControlInstance<T> {
+export class FormGroupInstance<T extends object> extends AbstractControlInstance<T> {
     constructor(dispatch: any,
-                control: FormControl<T>,
+                control: FormGroup<T>,
                 state: IFormControlState<T>) {
         super(dispatch, control, state);
     }

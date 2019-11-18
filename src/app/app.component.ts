@@ -3,9 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import * as Angular from '@angular/forms';
 import { Observable } from 'rxjs';
+import { AbstractControl } from './lib/abstract-control';
+import { MarkAsTouched, MarkAsUntouched, SetValue } from './lib/actions';
+import { AngularFormControlBinder } from './lib/angular-binder';
+import { FormControl } from './lib/form-control';
 import { formControlInstance, FormControlInstance } from './lib/form-control-instance';
-import { eventFactory, FormControl } from './lib/FormControl';
-import { ActionType, MarkAsTouched, SetError, SetName, SetValid } from './store/actions';
+import { FormGroup } from './lib/form-group';
+import { eventFactory } from './lib/FormControl';
+import { ActionType, SetError, SetName, SetValid } from './store/actions';
 import { IRootState } from './store/reducer';
 
 @Component({
@@ -20,6 +25,27 @@ export class AppComponent implements OnInit {
         name: new Angular.FormControl('login', Validators.required),
         pass: new Angular.FormControl('', Validators.required),
     });
+
+    abstractForm = new FormGroup('loginForm',
+        {
+            name: new FormControl<string>(
+                'oleg',
+                [],
+                [],
+                {
+                    MARK_AS_TOUCHED: eventFactory(MarkAsTouched),
+                },
+            ),
+            pass: new FormControl(
+                '',
+                [],
+                [],
+                {
+                    MARK_AS_TOUCHED: eventFactory(MarkAsTouched),
+                },
+            ),
+        },
+    );
 
     abstractName = new FormControl(
         'oleg',
@@ -37,24 +63,17 @@ export class AppComponent implements OnInit {
     @select([])
     state$: Observable<IRootState>;
 
-    constructor(private store: NgRedux<IRootState>) {
+    constructor(public store: NgRedux<IRootState>) {
         this.dispatch = store.dispatch.bind(store);
     }
 
     ngOnInit() {
-        this.store
-            .select(['name'])
-            .subscribe(
-                (name: any) => {
-                    console.log('formControlInstance', name);
-                    this.name = formControlInstance(
-                        this.dispatch,
-                        this.abstractName,
-                        name,
-                        this.name,
-                    );
-                },
-            );
+        const binder = new AngularFormControlBinder(
+            this.form.controls.name,
+            this.abstractName,
+            this.dispatch,
+            this.store.select(['name']),
+        );
 
         this.store.dispatch({
             type: ActionType.InitForm,
@@ -62,6 +81,8 @@ export class AppComponent implements OnInit {
 
         this.setName('vanya');
         setTimeout(() => this.setName('ollegy'), 1000);
+
+        const control = this.abstractForm.scheme.name as AbstractControl<string>;
     }
 
     setName(name: string) {
@@ -77,5 +98,8 @@ export class AppComponent implements OnInit {
     }
     public touch() {
         this.store.dispatch(MarkAsTouched());
+    }
+    public unTouch() {
+        this.store.dispatch(MarkAsUntouched());
     }
 }

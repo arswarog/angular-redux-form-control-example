@@ -1,41 +1,64 @@
-import { AnyAction } from 'redux';
-import { ActionType } from '../store/actions';
+import { ControlActionTypes } from './actions';
 import { IFormControlState } from './form-control-state.interface';
+import { AnyAction, FormAction, IControlPath, NothingFormAction } from './interfaces';
 
-const defaultState: Readonly<IFormControlState<any>> = Object.freeze({
-    value   : undefined,
-    errors  : null,
-    touched : false,
-    disabled: false,
-    pending : false,
+export const defaultFormControlState: Readonly<IFormControlState<any>> = Object.freeze({
+    formName   : null,
+    controlPath: null,
+    value      : undefined,
+    errors     : null,
+    touched    : false,
+    disabled   : false,
+    pending    : false,
+    dirty      : false,
 });
 
-export function formControlReducer<T>(state: IFormControlState<T>, action: AnyAction): IFormControlState<T> {
+export interface IFormAction extends AnyAction {
+    type: string;
+    formName?: string;
+    controlPath?: IControlPath;
+}
+
+export function bindActionToControl(action: NothingFormAction,
+                                    formState: IFormControlState<any>): FormAction {
+    return {
+        ...action,
+        formName   : formState.formName,
+        controlPath: 'controlPath' in action ? action.controlPath : formState.controlPath,
+    };
+}
+
+export function formControlReducer<T>(state: IFormControlState<T>, action: IFormAction): IFormControlState<T> {
     if (!state)
-        state = defaultState;
+        throw new Error('Form not initialized'); // TODO change message, add right way
+
+    if (!('formName' in action) ||
+        !('controlPath' in action) ||
+        action.formName !== state.formName ||
+        action.controlPath !== state.controlPath)
+        return state;
 
     switch (action.type) {
-        case ActionType.SetName:
+        case ControlActionTypes.SetValue:
+        case ControlActionTypes.PatchValue:
             return {
                 ...state,
                 value: action.value,
             };
-        case ActionType.MarkAsTouched:
+        case ControlActionTypes.MarkAsTouched:
             return {
                 ...state,
                 touched: true,
             };
-        case ActionType.SetError:
+        case ControlActionTypes.MarkAsUntouched:
             return {
                 ...state,
-                errors: {
-                    foo: true,
-                },
+                touched: false,
             };
-        case ActionType.SetValid:
+        case ControlActionTypes.SetErrors:
             return {
                 ...state,
-                errors: null,
+                errors: action.errors,
             };
     }
 
