@@ -3,11 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import * as Angular from '@angular/forms';
 import { Observable } from 'rxjs';
+import { FormBinder } from './angular-binder/form';
 import { AbstractControl } from './lib/abstract-control';
 import { MarkAsTouched, MarkAsUntouched, SetValue } from './lib/actions';
-import { AngularFormControlBinder } from './lib/angular-binder';
+import { Form } from './lib/form';
 import { FormControl } from './lib/form-control';
-import { formControlInstance, FormControlInstance } from './lib/form-control-instance';
+import { FormControlInstance } from './lib/form-control-instance';
 import { FormGroup } from './lib/form-group';
 import { eventFactory } from './lib/FormControl';
 import { ActionType, SetError, SetName, SetValid } from './store/actions';
@@ -26,7 +27,7 @@ export class AppComponent implements OnInit {
         pass: new Angular.FormControl('', Validators.required),
     });
 
-    abstractForm = new FormGroup('loginForm',
+    abstractForm = new Form('loginForm',
         {
             name: new FormControl<string>(
                 'oleg',
@@ -47,16 +48,7 @@ export class AppComponent implements OnInit {
         },
     );
 
-    abstractName = new FormControl(
-        'oleg',
-        [],
-        [],
-        {
-            MARK_AS_TOUCHED: eventFactory(MarkAsTouched),
-        },
-    );
-
-    name: FormControlInstance<string>;
+    instance: FormControlInstance<string>;
 
     public dispatch: any;
 
@@ -68,9 +60,9 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        const binder = new AngularFormControlBinder(
-            this.form.controls.name,
-            this.abstractName,
+        const binder = new FormBinder(
+            this.form,
+            this.abstractForm,
             this.dispatch,
             this.store.select(['name']),
         );

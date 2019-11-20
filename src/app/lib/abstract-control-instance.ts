@@ -2,17 +2,17 @@ import { SetError } from '../store/actions';
 import { AbstractControl } from './abstract-control';
 import { MarkAsTouched, MarkAsUntouched, PatchValue, SetErrors, SetValue } from './actions';
 import { FormControl } from './form-control';
-import { IFormControlState } from './form-control-state.interface';
-import { defaultFormControlState } from './form-control.reducer';
+import { IAbstractControlState } from './form-control-state.interface';
+import { defaultAbstractControlState } from './form.reducer';
 import { IDispatchFn } from './interfaces';
 import { IValidationErrors } from './validation';
 
 export abstract class AbstractControlInstance<T> {
     protected constructor(public readonly dispatch: IDispatchFn,
                           public readonly control: AbstractControl<T>,
-                          public readonly state: IFormControlState<T>) {
+                          public readonly state: IAbstractControlState<T>) {
         if (!state)
-            this.state = defaultFormControlState;
+            this.state = defaultAbstractControlState;
     }
 
     get value() {

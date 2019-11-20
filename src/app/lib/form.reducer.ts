@@ -1,16 +1,14 @@
 import { ControlActionTypes } from './actions';
-import { IFormControlState } from './form-control-state.interface';
+import { IAbstractControlState, IFormState } from './form-control-state.interface';
 import { AnyAction, FormAction, IControlPath, NothingFormAction } from './interfaces';
 
-export const defaultFormControlState: Readonly<IFormControlState<any>> = Object.freeze({
-    formName   : null,
-    controlPath: null,
-    value      : undefined,
-    errors     : null,
-    touched    : false,
-    disabled   : false,
-    pending    : false,
-    dirty      : false,
+export const defaultAbstractControlState: Readonly<IAbstractControlState<any>> = Object.freeze({
+    value   : undefined,
+    errors  : null,
+    touched : false,
+    disabled: false,
+    pending : false,
+    dirty   : false,
 });
 
 export interface IFormAction extends AnyAction {
@@ -19,23 +17,33 @@ export interface IFormAction extends AnyAction {
     controlPath?: IControlPath;
 }
 
-export function bindActionToControl(action: NothingFormAction,
-                                    formState: IFormControlState<any>): FormAction {
+export function initForm(formName: string): IFormState<any> {
+    console.log('init ' + formName);
     return {
-        ...action,
-        formName   : formState.formName,
-        controlPath: 'controlPath' in action ? action.controlPath : formState.controlPath,
+        formName,
+        ...defaultAbstractControlState,
+        controls: {},
     };
 }
 
-export function formControlReducer<T>(state: IFormControlState<T>, action: IFormAction): IFormControlState<T> {
-    if (!state)
+export function bindActionToControl(action: NothingFormAction,
+                                    form: IFormState<any>,
+                                    controlPath: IControlPath): FormAction {
+    return {
+        ...action,
+        formName: form.formName,
+        controlPath,
+    };
+}
+
+export function formReducer<T>(state: IFormState<T>, action: IFormAction): IFormState<T> {
+    console.log(state);
+    if (!state || !state.formName)
         throw new Error('Form not initialized'); // TODO change message, add right way
 
     if (!('formName' in action) ||
-        !('controlPath' in action) ||
         action.formName !== state.formName ||
-        action.controlPath !== state.controlPath)
+        !('controlPath' in action))
         return state;
 
     switch (action.type) {

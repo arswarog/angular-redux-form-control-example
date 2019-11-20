@@ -13,6 +13,10 @@ export class FormControl<T> extends AbstractControl<T> {
     public setHierarchy(formName: string, controlPath: (string | number)[]) {
         super.setHierarchy(formName, controlPath);
     }
+
+    public updateControlState(): void {
+        alert('update control state for ' + this._formName + ' ' + this._controlPath);
+    }
 }
 
 

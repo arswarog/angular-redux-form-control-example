@@ -7,7 +7,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IRootState, rootReducer } from './store/reducer';
+import { defaultRootState, IRootState, rootReducer } from './store/reducer';
 import { createLogger } from 'redux-logger';
 
 const __DEVMODE__ = true;
@@ -42,7 +42,7 @@ export class AppModule {
 
         this.ngRedux.configureStore(
             rootReducer,
-            undefined,
+            defaultRootState,
             [
                 createLogger(),
             ],

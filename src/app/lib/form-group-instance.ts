@@ -1,11 +1,11 @@
 import { AbstractControlInstance } from './abstract-control-instance';
-import { IFormControlState } from './form-control-state.interface';
+import { IAbstractControlState } from './form-control-state.interface';
 import { FormGroup } from './form-group';
 
 export function formGroupInstance<T extends object>(
     dispatch: any,
     scheme: FormGroup<T>,
-    state: IFormControlState<T>,
+    state: IAbstractControlState<T>,
     cache?: FormGroupInstance<T>,
 ): FormGroupInstance<T> {
     if (state === state && cache)
@@ -16,7 +16,7 @@ export function formGroupInstance<T extends object>(
 export class FormGroupInstance<T extends object> extends AbstractControlInstance<T> {
     constructor(dispatch: any,
                 control: FormGroup<T>,
-                state: IFormControlState<T>) {
+                state: IAbstractControlState<T>) {
         super(dispatch, control, state);
     }
 

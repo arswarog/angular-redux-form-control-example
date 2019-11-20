@@ -1,3 +1,4 @@
+import { IAbstractControlState } from './form-control-state.interface';
 import { AnyAction, IDispatchFn, IStrictControlPath } from './interfaces';
 
 export abstract class AbstractControl<T> {
@@ -27,7 +28,18 @@ export abstract class AbstractControl<T> {
             type       : action.type,
             formName   : this._formName,
             controlPath: this._controlPath,
-            ...action
+            ...action,
         });
     }
+
+    public getDefaultState(): Partial<IAbstractControlState<T>> {
+        return {
+            dirty   : false,
+            pending : false,
+            disabled: false,
+            touched : false,
+        };
+    }
+
+    abstract updateControlState(dispatch: IDispatchFn): void;
 }

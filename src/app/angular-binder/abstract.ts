@@ -1,22 +1,22 @@
 import { AbstractControl as AngularAbstractControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
-import { AbstractControl } from './abstract-control';
-import { AbstractControlInstance } from './abstract-control-instance';
-import { formControlInstance } from './form-control-instance';
-import { IFormControlState } from './form-control-state.interface';
-import { IDispatchFn } from './interfaces';
+import { AbstractControl } from '../lib/abstract-control';
+import { AbstractControlInstance } from '../lib/abstract-control-instance';
+import { formControlInstance } from '../lib/form-control-instance';
+import { IAbstractControlState } from '../lib/form-control-state.interface';
+import { IDispatchFn } from '../lib/interfaces';
 
 export type ArgumentsType<F> = F extends (...args: infer A) => any ? A : never;
 
-export class AngularFormControlBinder<T> {
-    private lastState: IFormControlState<T>;
+export abstract class AbstractControlBinder<T> {
+    private lastState: IAbstractControlState<T>;
 
     protected instance: AbstractControlInstance<T>;
 
     constructor(public angularControl: AngularAbstractControl,
                 public control: AbstractControl<T>,
                 private dispatch: IDispatchFn,
-                private state$: Observable<IFormControlState<T>>) {
+                private state$: Observable<IAbstractControlState<T>>) {
         state$.subscribe(
             state => {
                 if (!state)
