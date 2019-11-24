@@ -1,28 +1,31 @@
 import { AnyAction } from 'redux';
-import { AbstractControl } from './abstract-control';
+import { AbstractControlModel } from './abstract-control.model';
+import { ControlActionTypes } from './actions';
+import { FormAction } from './interfaces';
 
 export enum EventType {
-    Change        = 'change',
+    Change = 'change',
     MarkAsTouched = 'MARK_AS_TOUCHED',
 }
 
-interface IEventFactoryConfig {
-    prevent: boolean;
-}
+// interface IEventFactoryConfig {
+//     prevent: boolean;
+// }
+//
+// export type IEventFactory = any;
 
-export type IEventFactory = any;
+// export function eventFactory(actionFactory: (event: any) => AnyAction,
+//                              config?: IEventFactoryConfig): IEventFactory {
+//     return dispatch => (event: any) => {
+//         dispatch({
+//             type: 'event',
+//             event,
+//         });
+//     };
+// }
 
-export function eventFactory(actionFactory: (event: any) => AnyAction,
-                             config?: IEventFactoryConfig): IEventFactory {
-    return dispatch => (event: any) => {
-        dispatch({
-            type: 'event',
-            event,
-        });
-    };
-}
+export type EventRewrite = (acton: FormAction) => AnyAction | AnyAction[];
 
 export interface IEvents {
-    [EventType.Change]?: IEventFactory;
-    [EventType.MarkAsTouched]?: IEventFactory;
+    [ControlActionTypes.SetValue]?: EventRewrite;
 }

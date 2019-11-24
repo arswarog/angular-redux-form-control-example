@@ -1,6 +1,10 @@
-import { ControlActionTypes } from './actions';
-import { IAbstractControlState, IFormState } from './form-control-state.interface';
-import { AnyAction, FormAction, IControlPath, NothingFormAction } from './interfaces';
+import { ControlActionTypes, IFormAction } from './actions';
+import { IAbstractControlState, IFormGroupState, IFormState } from './form-control-state.interface';
+import { FormAction, IControlPath, IStrictControlPath, NothingFormAction } from './interfaces';
+import { AbstractControlModel } from './abstract-control.model';
+
+
+// export abstract class
 
 export const defaultAbstractControlState: Readonly<IAbstractControlState<any>> = Object.freeze({
     value   : undefined,
@@ -10,12 +14,6 @@ export const defaultAbstractControlState: Readonly<IAbstractControlState<any>> =
     pending : false,
     dirty   : false,
 });
-
-export interface IFormAction extends AnyAction {
-    type: string;
-    formName?: string;
-    controlPath?: IControlPath;
-}
 
 export function initForm(formName: string): IFormState<any> {
     console.log('init ' + formName);
@@ -47,6 +45,44 @@ export function formReducer<T>(state: IFormState<T>, action: IFormAction): IForm
         return state;
 
     switch (action.type) {
+        case ControlActionTypes.ControlInitForm: {
+            return formGroupReducer(state, action, []);
+        }
+        // default:
+        //     return abstractControlReducer(state, action);
+
+    }
+
+    return state;
+}
+
+function formGroupReducer<T extends IFormGroupState<any>>(state: T, action: IFormAction, path: IStrictControlPath): T {
+    switch (action.type) {
+        case ControlActionTypes.ControlInitForm:
+        case ControlActionTypes.ControlUpdate:
+            const controls = {};
+            const value = {};
+
+            Object.entries(action.form.scheme)
+                  .forEach(([key, control]: [string, AbstractControlModel<any> & { controls?: any }]) => {
+                      if ('controls' in control)
+                          return true;
+                      // else
+                          // controls[key] = abstractControlReducer()
+                  });
+
+            return {
+                ...abstractControlReducer(state, action, []),
+                controls: controls as any,
+                value   : value as any,
+            };
+    }
+    return state;
+}
+
+function abstractControlReducer<T extends IAbstractControlState<any>>(state: T, action: IFormAction,
+                                                                      path: IStrictControlPath): T {
+    switch (action.type) {
         case ControlActionTypes.SetValue:
         case ControlActionTypes.PatchValue:
             return {
@@ -67,6 +103,17 @@ export function formReducer<T>(state: IFormState<T>, action: IFormAction): IForm
             return {
                 ...state,
                 errors: action.errors,
+            };
+        case ControlActionTypes.ControlInitForm:
+        case ControlActionTypes.ControlUpdate:
+            return {
+                ...state,
+                pending : state.pending || false,
+                dirty   : state.dirty || false,
+                disabled: state.disabled || false,
+                touched : state.touched || false,
+                errors  : state.errors || null,
+                value   : state.value || null,
             };
     }
 

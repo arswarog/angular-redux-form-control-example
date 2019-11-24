@@ -5,6 +5,7 @@ export interface IAbstractControlState<T> {
     pending: boolean;
     disabled: boolean;
     touched: boolean;
+    controls?: any;
 }
 
 export interface IFormGroupState<T> extends IAbstractControlState<T> {

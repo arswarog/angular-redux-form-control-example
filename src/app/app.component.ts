@@ -4,12 +4,12 @@ import { Validators } from '@angular/forms';
 import * as Angular from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormBinder } from './angular-binder/form';
-import { AbstractControl } from './lib/abstract-control';
+import { AbstractControlModel } from './lib/abstract-control.model';
 import { MarkAsTouched, MarkAsUntouched, SetValue } from './lib/actions';
-import { Form } from './lib/form';
-import { FormControl } from './lib/form-control';
-import { FormControlInstance } from './lib/form-control-instance';
-import { FormGroup } from './lib/form-group';
+import { FormModel } from './lib/form.model';
+import { FormControlModel } from './lib/form-control.model';
+import { FormControlInstance } from './lib/form-control.instance';
+import { FormGroupModel } from './lib/form-group.model';
 import { eventFactory } from './lib/FormControl';
 import { ActionType, SetError, SetName, SetValid } from './store/actions';
 import { IRootState } from './store/reducer';
@@ -27,9 +27,9 @@ export class AppComponent implements OnInit {
         pass: new Angular.FormControl('', Validators.required),
     });
 
-    abstractForm = new Form('loginForm',
+    abstractForm = new FormModel('loginForm',
         {
-            name: new FormControl<string>(
+            name: new FormControlModel<string>(
                 'oleg',
                 [],
                 [],
@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
                     MARK_AS_TOUCHED: eventFactory(MarkAsTouched),
                 },
             ),
-            pass: new FormControl(
+            pass: new FormControlModel(
                 '',
                 [],
                 [],
@@ -74,7 +74,7 @@ export class AppComponent implements OnInit {
         this.setName('vanya');
         setTimeout(() => this.setName('ollegy'), 1000);
 
-        const control = this.abstractForm.scheme.name as AbstractControl<string>;
+        const control = this.abstractForm.scheme.name as AbstractControlModel<string>;
     }
 
     setName(name: string) {

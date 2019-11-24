@@ -1,22 +1,36 @@
+import { IAbstractControlState } from './form-control-state.interface';
 import { AbstractControl } from './abstract-control';
-import { IEvents } from './FormControl';
-import { AnyAction, IAsyncValidator, IValidator } from './interfaces';
+import { FormControlModel } from './form-control.model';
+import { ControlActionTypes, IFormAction } from './actions';
+import { FormError } from './interfaces';
 
 export class FormControl<T> extends AbstractControl<T> {
-    constructor(defaultValue: T,
-                public readonly validators: IValidator | IValidator[],
-                public readonly asyncValidators: IAsyncValidator | IAsyncValidator[],
-                public readonly events: IEvents) {
-        super(defaultValue);
+    constructor(model: Partial<IAbstractControlState<T>> | FormControlModel<T>) {
+        if (model instanceof FormControlModel)
+            super(model, {});
+        else
+            super(model);
     }
 
-    public setHierarchy(formName: string, controlPath: (string | number)[]) {
-        super.setHierarchy(formName, controlPath);
+    protected updateSelf(state: IAbstractControlState<T>): this {
+        return new FormControl(state) as this;
     }
 
-    public updateControlState(): void {
-        alert('update control state for ' + this._formName + ' ' + this._controlPath);
+    patchValue(value: Partial<T>): this {
+        return this.updateSelf({
+            ...this,
+            value,
+        });
+    }
+
+    dispatch(action: IFormAction): this {
+        if (!Array.isArray(action.controlPath) || action.controlPath.length > 0)
+            throw new FormError(`Ignore path because FormControl can process only direct actions`, []);
+
+        switch (action.type) {
+            case ControlActionTypes.SetValue:
+                return this.setValue(action.value);
+        }
+        return this;
     }
 }
-
-

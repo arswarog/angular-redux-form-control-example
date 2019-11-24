@@ -1,7 +1,7 @@
 import { SetError } from '../store/actions';
-import { AbstractControl } from './abstract-control';
+import { AbstractControlModel } from './abstract-control.model';
 import { MarkAsTouched, MarkAsUntouched, PatchValue, SetErrors, SetValue } from './actions';
-import { FormControl } from './form-control';
+import { FormControlModel } from './form-control.model';
 import { IAbstractControlState } from './form-control-state.interface';
 import { defaultAbstractControlState } from './form.reducer';
 import { IDispatchFn } from './interfaces';
@@ -9,7 +9,7 @@ import { IValidationErrors } from './validation';
 
 export abstract class AbstractControlInstance<T> {
     protected constructor(public readonly dispatch: IDispatchFn,
-                          public readonly control: AbstractControl<T>,
+                          public readonly model: AbstractControlModel<T>,
                           public readonly state: IAbstractControlState<T>) {
         if (!state)
             this.state = defaultAbstractControlState;
@@ -63,23 +63,28 @@ export abstract class AbstractControlInstance<T> {
         return this.state.errors;
     }
 
-    markAsTouched(opts: {onlySelf?: boolean} = {}) {
-        this.control.emitEvent(this.dispatch, MarkAsTouched(opts));
+    markAsTouched(opts: { onlySelf?: boolean } = {}) {
+        this.model.emitEvent(this.dispatch, MarkAsTouched(opts));
     }
-    markAsUntouched(opts: {onlySelf?: boolean;} = {}): void {
-        this.control.emitEvent(this.dispatch, MarkAsUntouched(opts));
+
+    markAsUntouched(opts: { onlySelf?: boolean; } = {}): void {
+        this.model.emitEvent(this.dispatch, MarkAsUntouched(opts));
     }
+
     // markAllAsTouched(): void {
     //     this.control.emitEvent(this.dispatch, MarkAsTouched(this.control));
     // }
 
     /**************/
     setValue(value: T): void {
-        this.control.emitEvent(this.dispatch, SetValue(value));
+        if (this.value !== value)
+            this.model.emitEvent(this.dispatch, SetValue(value));
     }
+
     patchValue(value: Partial<T>): void {
-        this.control.emitEvent(this.dispatch, PatchValue(value));
+        this.model.emitEvent(this.dispatch, PatchValue(value));
     }
+
     // reset(formState: T = null): void;
 
     // inherited from forms/AbstractControl
@@ -95,8 +100,9 @@ export abstract class AbstractControlInstance<T> {
     // enable(opts: {onlySelf?: boolean;} = {}): void
     // // updateValueAndValidity(opts: {onlySelf?: boolean; emitEvent?: boolean;} = {}): void
     setErrors(errors: IValidationErrors): void {
-        this.control.emitEvent(this.dispatch, SetErrors(errors));
+        this.model.emitEvent(this.dispatch, SetErrors(errors));
     }
+
     // get(path: string | (string | number)[]): AbstractControl | null
     // getError(errorCode: string, path?: string | (string | number)[]): any
     // hasError(errorCode: string, path?: string | (string | number)[]): boolean
