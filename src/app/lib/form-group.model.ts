@@ -1,7 +1,7 @@
-import { AbstractControlModel } from './abstract-control.model';
+import { AbstractControlModel, IAbstractControlModelOptions } from './abstract-control.model';
 import { ControlActions, ControlActionTypes } from './actions';
 import { EventType, IEvents } from './FormControl';
-import { FormAction, IDispatchFn } from './interfaces';
+import { FormAction, IAsyncValidator, IDispatchFn, IValidator } from './interfaces';
 
 export type IFormGroupScheme<T extends object> = {
     [K in keyof T]: AbstractControlModel<T[K]>;
@@ -9,8 +9,13 @@ export type IFormGroupScheme<T extends object> = {
 
 export class FormGroupModel<T extends object> extends AbstractControlModel<T> {
     constructor(public readonly scheme: IFormGroupScheme<T>,
-                public readonly events: IEvents = {}) {
-        super({} as T);
+                options: IAbstractControlModelOptions = {}) {
+        super(
+            {} as any,
+            [],
+            [],
+            options,
+        );
     }
 
     public setHierarchy(formName: string, controlPath: (string | number)[]) {
@@ -33,7 +38,7 @@ export class FormGroupModel<T extends object> extends AbstractControlModel<T> {
 
         Object.keys(this.scheme).forEach((key) => {
             const control: AbstractControlModel<any> = this.scheme[key];
-            action.children[key].con;
+            // action.children[key].con;
             console.log(key, control);
             // control.setHierarchy(formName, [key]);
         });

@@ -2,6 +2,10 @@ import { IAbstractControlState } from './form-control-state.interface';
 import { AnyAction, IAsyncValidator, IDispatchFn, IStrictControlPath, IValidator } from './interfaces';
 import { IEvents } from './FormControl';
 
+export interface IAbstractControlModelOptions {
+    events?: IEvents;
+    debounceTime?: number;
+}
 
 export abstract class AbstractControlModel<T> {
     protected _formName: string;
@@ -15,10 +19,11 @@ export abstract class AbstractControlModel<T> {
         return this._controlPath;
     }
 
-    protected constructor(public readonly defaultValue: T,
+    protected constructor(public readonly defaultValue: T = null,
                           public readonly validators: IValidator | IValidator[] = [],
                           public readonly asyncValidators: IAsyncValidator | IAsyncValidator[] = [],
-                          public readonly events: IEvents = {}) {
+                          public readonly options: IAbstractControlModelOptions = {}) {
+        this.options = Object.assign({events: {}}, options);
     }
 
     public setHierarchy(formName: string, controlPath: IStrictControlPath) {
@@ -36,8 +41,9 @@ export abstract class AbstractControlModel<T> {
             ...action,
         };
 
-        if (action.type in this.events) {
-            const replace = this.events[action.type](action);
+        console.log(this.options);
+        if (action.type in this.options.events) {
+            const replace = this.options.events[action.type](action);
 
             if (Array.isArray(replace))
                 replace.forEach(fn => dispatch(fn));

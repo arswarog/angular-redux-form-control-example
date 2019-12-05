@@ -14,10 +14,12 @@ describe('FormControlModel', () => {
             [],
             [],
             {
-                [ControlActionTypes.SetValue]: (action: FormAction): AnyAction => ({
-                    type : 'some',
-                    value: action.value,
-                }),
+                events: {
+                    [ControlActionTypes.SetValue]: (action: FormAction): AnyAction => ({
+                        type : 'some',
+                        value: action.value,
+                    }),
+                },
             },
         );
 
@@ -49,15 +51,17 @@ describe('FormControlModel', () => {
             [],
             [],
             {
-                [ControlActionTypes.SetValue]: (action: FormAction) => (
-                    [
-                        {
-                            type : 'some',
-                            value: action.value,
-                        },
-                        action,
-                    ]
-                ),
+                events: {
+                    [ControlActionTypes.SetValue]: (action: FormAction) => (
+                        [
+                            {
+                                type : 'some',
+                                value: action.value,
+                            },
+                            action,
+                        ]
+                    ),
+                },
             },
         );
 

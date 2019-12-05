@@ -28,11 +28,11 @@ export function loginFormReducer(state: IFormState<ILoginFormState>, action: Any
     if (!state)
         state = initForm('-');
 
-    state = formReducer(state, action);
+    state = formReducer(state, action as any);
 
     switch (action.type) {
         case ActionType.InitForm:
-            return formReducer(state, FormActions.Reset());
+            return formReducer(state, FormActions.Reset() as any);
         case ActionType.SetName:
             return formReducer(
                 state,
@@ -40,7 +40,7 @@ export function loginFormReducer(state: IFormState<ILoginFormState>, action: Any
                     FormActions.SetValue(action.value),
                     state,
                     ['name'],
-                ),
+                ) as any,
             );
         case ActionType.SetError:
             return formReducer(
@@ -51,7 +51,7 @@ export function loginFormReducer(state: IFormState<ILoginFormState>, action: Any
                     }),
                     state,
                     'name',
-                ),
+                ) as any,
             );
         case ActionType.SetValid:
             return formReducer(
@@ -60,7 +60,7 @@ export function loginFormReducer(state: IFormState<ILoginFormState>, action: Any
                     FormActions.SetErrors(null),
                     state,
                     ['name'],
-                ),
+                ) as any,
             );
     }
     return state;
@@ -70,7 +70,7 @@ export function regFormReducer(state: IFormState<ILoginFormState>, action: AnyAc
     if (!state)
         state = initForm('-');
 
-    state = formReducer(state, action);
+    state = formReducer(state, action as any);
 
     switch (action.type) {
         // case ActionType.InitForm:

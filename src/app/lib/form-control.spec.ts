@@ -61,6 +61,50 @@ describe('FormControl', () => {
                 }).toJSON()).eql(json2);
             });
         });
+        describe('changeValue', () => {
+            it('change value', () => {
+                const model = new FormControlModel('');
+                const control = new FormControl(model);
+
+                const control2 = control.changeValue('value');
+
+                const json = control.toJSON();
+
+                should(json).eql({
+                    value   : '',
+                    pending : false,
+                    dirty   : false,
+                    disabled: false,
+                    touched : false,
+                    errors  : null,
+                });
+
+                const json2 = control2.toJSON();
+
+                should(json2).eql({
+                    value   : 'value',
+                    pending : false,
+                    dirty   : true,
+                    disabled: false,
+                    touched : false,
+                    errors  : null,
+                });
+
+                should(control.dispatch({
+                    type       : ControlActionTypes.SetValue,
+                    formName   : '',
+                    controlPath: [],
+                    value      : 'value',
+                }).toJSON()).eql({
+                    value   : 'value',
+                    pending : false,
+                    dirty   : false,
+                    disabled: false,
+                    touched : false,
+                    errors  : null,
+                });
+            });
+        });
     });
 
     describe('dispatch', () => {

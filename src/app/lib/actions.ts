@@ -84,32 +84,32 @@ export interface IFormActionControlUpdate<T> extends FormAction {
 }
 
 export const ControlActions = Object.freeze({
-    InitForm: <T extends object>(form: FormModel<T>): FormAction => ({
+    InitForm: <T extends object>(formModel: FormModel<T>): FormAction => ({
         type       : ControlActionTypes.ControlInitForm,
-        formName   : form.formName,
+        formName   : formModel.formName,
         controlPath: null,
-        form,
+        formModel,
     }),
     Update  : (control: AbstractControlModel<any>,
                children?: IFormGroupScheme<any> | IAbstractControlState<any>[]): FormAction => {
-        const action: FormAction = {
-            type       : ControlActionTypes.ControlUpdate,
-            formName   : control.formName,
-            controlPath: control.controlPath,
-            state      : control.getDefaultState(),
-        };
-        if (Array.isArray(children))
-            throw new Error('not implements array control');
-        else if (typeof children === 'object') {
-            action.children = {};
-            Object.keys(this.children).forEach((key) => {
-                const control: AbstractControlModel<any> = this.scheme[key];
-                console.log(key, control);
-                // control.setHierarchy(formName, [key]);
-            });
-        } else
-            throw         new Error('Incorrect childred');
-        return action;
+        // const action: FormAction = {
+        //     type       : ControlActionTypes.ControlUpdate,
+        //     formName   : control.formName,
+        //     controlPath: control.controlPath,
+        //     state      : control.getDefaultState(),
+        // };
+        // if (Array.isArray(children))
+        //     throw new Error('not implements array control');
+        // else if (typeof children === 'object') {
+        //     action.children = {};
+        //     Object.keys(children).forEach((key) => {
+        //         const control: AbstractControlModel<any> = this.scheme[key];
+        //         console.log(key, control);
+        //         // control.setHierarchy(formName, [key]);
+        //     });
+        // } else
+        //     throw         new Error('Incorrect childred');
+        return {type: 'UPDATE (NONE)'} as any;
     },
     // Add   : <T>(control: AbstractControl<T>,
     //             controls?: { [K in keyof T]: IAbstractControlState<T[K]> } | IAbstractControlState<any>[]): FormAction =>

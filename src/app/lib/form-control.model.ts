@@ -1,4 +1,4 @@
-import { AbstractControlModel } from './abstract-control.model';
+import { AbstractControlModel, IAbstractControlModelOptions } from './abstract-control.model';
 import { IEvents } from './FormControl';
 import { AnyAction, IAsyncValidator, IValidator } from './interfaces';
 import { IAbstractControlState } from './form-control-state.interface';
@@ -9,8 +9,8 @@ export class FormControlModel<T> extends AbstractControlModel<T> {
     constructor(defaultValue: T = null,
                 validators?: IValidator | IValidator[],
                 asyncValidators?: IAsyncValidator | IAsyncValidator[],
-                events?: IEvents) {
-        super(defaultValue, validators, asyncValidators, events);
+                options?: IAbstractControlModelOptions) {
+        super(defaultValue, validators, asyncValidators, options);
     }
 
     public setHierarchy(formName: string, controlPath: (string | number)[]) {

@@ -23,8 +23,18 @@
 
 <pre>State: {{store.getState() | json}}</pre>
 <pre>Form value: {{form.value | json}}</pre>
+<pre>Form dirty: {{form.dirty | json}}</pre>
+<pre>Form touched: {{form.touched | json}}</pre>
+
+<pre>Name dirty: {{form.controls.name.dirty | json}}</pre>
+<pre>Name touched: {{form.controls.name.touched | json}}</pre>
+
+<button (click)="form.controls.name.setValue('123123123')">set value</button>
+<button (click)="form.controls.name.patchValue('123123123')">set value</button>
+
+
 <!--<pre>name.value: {{name.value | json}}</pre>-->
-<pre>name: {{name | json}}</pre>
-<pre>abstract name: {{abstractName | json}}</pre>
+<!--<pre>name: {{name | json}}</pre>-->
+<!--<pre>abstract name: {{abstractName | json}}</pre>-->
 
 <router-outlet></router-outlet>

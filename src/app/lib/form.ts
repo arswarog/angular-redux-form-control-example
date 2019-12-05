@@ -1,6 +1,7 @@
 import { FormGroup } from './form-group';
 import { FormGroupModel } from './form-group.model';
-import { IFormAction } from './actions';
+import { ControlActionTypes, IFormAction } from './actions';
+import { FormModel } from './form.model';
 
 export class Form<T extends object> extends FormGroup<T> {
     public readonly formName: string;
@@ -25,6 +26,17 @@ export class Form<T extends object> extends FormGroup<T> {
         if (action.formName !== this.formName)
             return this;
 
+        switch (action.type) {
+            case ControlActionTypes.ControlInitForm:
+                if (action.formModel.formName !== this.formName)
+                    throw new Error('Incorrect form model: formNames not equils');
+                return generateForm(action.formModel) as any;
+        }
+
         return super.dispatch(action);
     }
+}
+
+export function generateForm<T extends object>(model: FormModel<T>, defaultValue: T = null): Form<T> {
+    return new Form(model.formName, model);
 }

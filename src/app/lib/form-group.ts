@@ -37,18 +37,47 @@ export class FormGroup<T extends object> extends AbstractControl<T> {
         return new FormGroup(state) as this;
     }
 
-    public patchValue(value: Partial<T>): this { // TODO
+    public setValue(value: T): this {
+        const controls: any = {};
+
+        Object.keys(this.controls).forEach(key => {
+            const control: AbstractControl<any> = this.controls[key];
+            if (!(key in value))
+                throw new FormError('Invalid value. value must have field "${key}"', [key]);
+            console.log('!!!', key, value[key]);
+            controls[key] = control.setValue(value[key]);
+            console.log('!!!', key, control === controls[key]);
+        });
+
         return this.updateSelf({
             ...this,
-            // value: {
-            //     ...this.value,
-            //     value,
-            // },
+            value: getValueOfGroupControls(controls),
+            controls,
+        });
+    }
+
+    public patchValue(value: Partial<T>): this { // TODO
+        const controls = {...this.controls};
+
+        Object.keys(value).forEach(key => {
+            if (key in this.controls) {
+                const control: AbstractControl<any> = this.controls[key];
+                console.log('!!!', key, value[key]);
+                controls[key] = control.patchValue(value[key]);
+                console.log('!!!', key, control === controls[key]);
+            }
+        });
+
+        return this.updateSelf({
+            ...this,
+            value: getValueOfGroupControls(controls),
+            controls,
         });
     }
 
     public toJSON(): IAbstractControlState<T> {
         const controls: any = {};
+        console.log(this);
         Object.keys(this.controls).forEach(
             key => controls[key] = this.controls[key].toJSON(),
         );
@@ -76,12 +105,10 @@ export class FormGroup<T extends object> extends AbstractControl<T> {
         }
 
         switch (action.type) {
-            case ControlActionTypes.SetValue: {
-                return this.updateSelf({
-                    ...this,
-                    value: action.value,
-                });
-            }
+            case ControlActionTypes.SetValue:
+                return this.setValue(action.value);
+            case ControlActionTypes.PatchValue:
+                return this.patchValue(action.value);
         }
 
         return this;
@@ -112,4 +139,10 @@ export class FormGroup<T extends object> extends AbstractControl<T> {
             throw e;
         }
     }
+}
+
+function getValueOfGroupControls<T extends object>(controls: { [K in keyof T]: IAbstractControlState<T[K]> }): T {
+    const value: Partial<T> = {};
+    Object.keys(controls).forEach(key => value[key] = controls[key].value);
+    return value as T;
 }

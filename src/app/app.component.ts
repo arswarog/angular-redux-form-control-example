@@ -1,11 +1,11 @@
 import { NgRedux, select } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import * as Angular from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormBinder } from './angular-binder/form';
 import { AbstractControlModel } from './lib/abstract-control.model';
-import { MarkAsTouched, MarkAsUntouched, SetValue } from './lib/actions';
+import { ControlActionTypes, MarkAsTouched, MarkAsUntouched, SetValue } from './lib/actions';
 import { FormModel } from './lib/form.model';
 import { FormControlModel } from './lib/form-control.model';
 import { FormControlInstance } from './lib/form-control.instance';
@@ -34,7 +34,9 @@ export class AppComponent implements OnInit {
                 [],
                 [],
                 {
-                    MARK_AS_TOUCHED: eventFactory(MarkAsTouched),
+                    events: {
+                        [ControlActionTypes.MarkAsTouched]: eventFactory(MarkAsTouched),
+                    },
                 },
             ),
             pass: new FormControlModel(
@@ -42,7 +44,9 @@ export class AppComponent implements OnInit {
                 [],
                 [],
                 {
-                    MARK_AS_TOUCHED: eventFactory(MarkAsTouched),
+                    events: {
+                        [ControlActionTypes.MarkAsTouched]: eventFactory(MarkAsTouched),
+                    },
                 },
             ),
         },
@@ -88,9 +92,11 @@ export class AppComponent implements OnInit {
     setValid() {
         this.store.dispatch(SetValid());
     }
+
     public touch() {
         this.store.dispatch(MarkAsTouched());
     }
+
     public unTouch() {
         this.store.dispatch(MarkAsUntouched());
     }

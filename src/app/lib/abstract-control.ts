@@ -90,6 +90,15 @@ export abstract class AbstractControl<T> implements IAbstractControlState<T> {
         });
     }
 
+    changeValue(value: T): this {
+        return this.updateSelf({
+            ...this,
+            value,
+            dirty  : true,
+            // touched: true,
+        });
+    }
+
     abstract patchValue(value: Partial<T>): this;
 
     // reset(formState: T = null): void;

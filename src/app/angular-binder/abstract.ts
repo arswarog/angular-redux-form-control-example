@@ -19,6 +19,8 @@ export abstract class AbstractControlBinder<T> {
                 private state$: Observable<IAbstractControlState<T>>) {
         state$.subscribe(
             state => {
+                console.log('UPDATE STATE', state);
+
                 if (!state)
                     return;
 
@@ -48,15 +50,16 @@ export abstract class AbstractControlBinder<T> {
 
         angularControl.valueChanges
                       .subscribe(value => {
-                          if (!this.lastState || value !== this.lastState.value)
-                              this.instance.setValue(value);
+                          if (this.instance)
+                              if (!this.lastState || value !== this.lastState.value)
+                                  this.instance.setValue(value);
                       });
         angularControl.statusChanges
                       .subscribe(
-                          status => console.log(status),
+                          status => true, // console.log(status),
                       );
 
-        const prevMarkAsTouched   = angularControl.markAsTouched;
+        const prevMarkAsTouched = angularControl.markAsTouched;
         const prevMarkAsUntouched = angularControl.markAsUntouched;
 
         const touchedChanges$ = new Subject<boolean>();
@@ -69,7 +72,8 @@ export abstract class AbstractControlBinder<T> {
             if (_this.instance.untouched) {
                 console.log(_this.instance);
                 console.log('touch 2');
-                _this.instance.markAsTouched();
+                if (_this.instance)
+                    _this.instance.markAsTouched();
             }
         }
 
@@ -82,7 +86,7 @@ export abstract class AbstractControlBinder<T> {
             }
         }
 
-        angularControl.markAsTouched   = nextMarkAsTouched;
+        angularControl.markAsTouched = nextMarkAsTouched;
         angularControl.markAsUntouched = nextMarkAsUntouched;
 
         touchedChanges$.subscribe(
