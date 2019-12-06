@@ -24,18 +24,3 @@ export interface FormAction extends AnyAction {
 }
 
 export type IDispatchFn = (action: AnyAction) => void;
-
-export class FormError extends Error {
-    public readonly originalMessage: string;
-
-    constructor(message: string, public readonly controlPath: IStrictControlPath, formName?: string) {
-        super(message.replace(/\${path}/g, controlPath.join('.')));
-        this.originalMessage = message;
-    }
-}
-
-export class UnknownFieldError extends FormError {
-    constructor(controlPath: IStrictControlPath) {
-        super('Unknown field "${path}"', controlPath);
-    }
-}

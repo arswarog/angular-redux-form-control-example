@@ -4,8 +4,7 @@ import { FormGroupModel } from './form-group.model';
 import { FormControlModel } from './form-control.model';
 import { FormControl } from './form-control';
 import { ControlActionTypes, IFormAction } from './actions';
-import { FormError, UnknownFieldError } from './interfaces';
-import { catchError } from 'rxjs/operators';
+import { FormError, UnknownFieldError } from './errors';
 
 export class FormGroup<T extends object> extends AbstractControl<T> {
     public readonly controls: { [K in keyof T]: AbstractControl<T[K]> };

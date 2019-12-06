@@ -277,12 +277,21 @@ describe('Form', () => {
 
             const json = form.toJSON();
 
-            throw should(() => form.dispatch({
-                type       : ControlActionTypes.SetValue,
-                formName   : 'login',
-                controlPath: ['meta', 'invalid-path'],
-                value      : 1,
-            })).throw('Unknown field "meta.invalid-path"');
+            function run() {
+                form.dispatch({
+                    type       : ControlActionTypes.SetValue,
+                    formName   : 'login',
+                    controlPath: ['meta', 'invalid-path'],
+                    value      : 1,
+                });
+            }
+
+            try {
+                run();
+            } catch (e) {
+                console.log(e);
+            }
+            should(run).throw('Unknown field "login: .meta"');
         });
     });
     describe('generateForm', () => {

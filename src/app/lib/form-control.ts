@@ -2,7 +2,7 @@ import { IAbstractControlState } from './form-control-state.interface';
 import { AbstractControl } from './abstract-control';
 import { FormControlModel } from './form-control.model';
 import { ControlActionTypes, IFormAction } from './actions';
-import { FormError } from './interfaces';
+import { FormError } from './errors';
 
 export class FormControl<T> extends AbstractControl<T> {
     constructor(model: Partial<IAbstractControlState<T>> | FormControlModel<T>) {

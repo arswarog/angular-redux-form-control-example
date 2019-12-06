@@ -4,12 +4,13 @@ import {
     FormControl as AngularFormControl,
     FormGroup as AngularFormGroup,
 } from '@angular/forms';
-import { IDispatchFn, UnknownFieldError } from '../lib/interfaces';
+import { IDispatchFn } from '../lib/interfaces';
 import { Observable } from 'rxjs';
 import { FormGroupModel } from '../lib/form-group.model';
 import { FormGroup } from '../lib/form-group';
 import { filter, map } from 'rxjs/operators';
 import { FormControlBinder } from './form-control';
+import { UnknownFieldError } from '../lib/errors';
 
 export class FormGroupBinder<T extends object> extends AbstractControlBinder<T> {
     constructor(angularFormGroup: AngularFormGroup,
