@@ -92,12 +92,12 @@ export const ControlActions = Object.freeze({
     }),
     Update  : (control: AbstractControlModel<any>,
                children?: IFormGroupScheme<any> | IAbstractControlState<any>[]): FormAction => {
-        // const action: FormAction = {
-        //     type       : ControlActionTypes.ControlUpdate,
-        //     formName   : control.formName,
-        //     controlPath: control.controlPath,
-        //     state      : control.getDefaultState(),
-        // };
+        const action: FormAction = {
+            type       : ControlActionTypes.ControlUpdate,
+            formName   : control.formName,
+            controlPath: control.controlPath,
+            // state      : control.getDefaultState(),
+        };
         // if (Array.isArray(children))
         //     throw new Error('not implements array control');
         // else if (typeof children === 'object') {
@@ -109,7 +109,8 @@ export const ControlActions = Object.freeze({
         //     });
         // } else
         //     throw         new Error('Incorrect childred');
-        return {type: 'UPDATE (NONE)'} as any;
+        // return {type: 'UPDATE (NONE)'} as any;
+        return action;
     },
     // Add   : <T>(control: AbstractControl<T>,
     //             controls?: { [K in keyof T]: IAbstractControlState<T[K]> } | IAbstractControlState<any>[]): FormAction =>

@@ -38,12 +38,13 @@ export class FormGroupModel<T extends object> extends AbstractControlModel<T> {
 
         Object.keys(this.scheme).forEach((key) => {
             const control: AbstractControlModel<any> = this.scheme[key];
-            // action.children[key].con;
+            action.children[key] = control;
             console.log(key, control);
             // control.setHierarchy(formName, [key]);
         });
 
-        dispatch(ControlActions.Update(this, this.scheme));
+        dispatch(action)
+        // dispatch(ControlActions.Update(this, this.scheme));
 
         Object.keys(this.scheme).forEach((key) => {
             const control: AbstractControlModel<any> = this.scheme[key];
